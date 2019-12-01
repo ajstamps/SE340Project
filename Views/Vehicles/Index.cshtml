@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SE340.Models.Vehicle>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Make)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Drive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Engine_Layout)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Num_cylinders)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Displacement)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Make)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Drive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Engine_Layout)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Num_cylinders)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Displacement)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
