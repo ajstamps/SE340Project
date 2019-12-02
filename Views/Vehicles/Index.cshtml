@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Index";
+    var userFavorites = (List<Vehicle>)ViewData["UserFavorites"];
 }
+
 
 <h1>Index</h1>
 
@@ -63,7 +65,16 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
+                @if (userFavorites.Contains(item))
+                {
+                    <a asp-action="Unfavorite" asp-route-id="@item.ID">Unfavorite</a>
+
+                }
+                else
+                {
+                    <a asp-action="Favorite" asp-route-id="@item.ID">Favorite</a>
+                }
             </td>
         </tr>
 }

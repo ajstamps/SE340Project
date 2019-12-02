@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SE340.Migrations.SE340User
+namespace SE340.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -152,6 +152,32 @@ namespace SE340.Migrations.SE340User
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Vehicles",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Make = table.Column<string>(nullable: true),
+                    Model = table.Column<string>(nullable: true),
+                    Drive = table.Column<int>(nullable: false),
+                    Engine_Layout = table.Column<int>(nullable: false),
+                    Num_cylinders = table.Column<int>(nullable: false),
+                    Displacement = table.Column<float>(nullable: false),
+                    Weight = table.Column<float>(nullable: false),
+                    SE340UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vehicles", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Vehicles_AspNetUsers_SE340UserId",
+                        column: x => x.SE340UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -190,6 +216,11 @@ namespace SE340.Migrations.SE340User
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_SE340UserId",
+                table: "Vehicles",
+                column: "SE340UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -208,6 +239,9 @@ namespace SE340.Migrations.SE340User
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

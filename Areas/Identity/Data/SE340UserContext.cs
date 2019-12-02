@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SE340.Areas.Identity.Data;
 
 namespace SE340.Models
 {
-    public class SE340UserContext : IdentityDbContext<IdentityUser>
+    public class SE340UserContext : IdentityDbContext<SE340User>
     {
+        public DbSet<Vehicle> Vehicles { get; set; }
+
         public SE340UserContext(DbContextOptions<SE340UserContext> options)
             : base(options)
         {

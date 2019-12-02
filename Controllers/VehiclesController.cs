@@ -1,27 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SE340.Data;
+using SE340.Areas.Identity.Data;
 using SE340.Models;
 
 namespace SE340.Controllers
 {
     public class VehiclesController : Controller
     {
-        private readonly SE340Context _context;
-
-        public VehiclesController(SE340Context context)
+        private readonly SE340UserContext _context;
+        private readonly UserManager<SE340User> _userManager;
+        public VehiclesController(SE340UserContext context, UserManager<SE340User> userContext)
         {
             _context = context;
+            _userManager = userContext;
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
+            SE340User user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            ViewData["UserFavorites"] = user.FavoritedVehicles;
+
             return View(await _context.Vehicles.ToListAsync());
         }
 
@@ -148,6 +156,44 @@ namespace SE340.Controllers
         private bool VehicleExists(int id)
         {
             return _context.Vehicles.Any(e => e.ID == id);
+        }
+        
+        [ActionName("Favorite")]
+        public async Task<IActionResult> Favorite(int id)
+        {
+            var store = new UserStore<SE340User>(_context);
+            var ctx = store.Context;
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(m => m.ID == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            } else
+            {
+                Console.WriteLine(vehicle.Make);
+            }
+
+            SE340User user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!user.FavoritedVehicles.Contains(vehicle))
+            {
+                user.FavoritedVehicles.Add(vehicle);
+
+                await _userManager.UpdateAsync(user);
+
+                ctx.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

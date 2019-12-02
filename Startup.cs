@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SE340.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace SE340
@@ -27,11 +26,6 @@ namespace SE340
         {
             services.AddControllersWithViews();
             services.AddMvc();
-
-            services.AddDbContext<SE340Context>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("SE340Context"));
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,11 +49,12 @@ namespace SE340
 
             app.UseAuthorization();
 
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
             });
         }
     }

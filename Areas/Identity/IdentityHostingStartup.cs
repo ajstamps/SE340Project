@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SE340.Areas.Identity.Data;
 using SE340.Models;
 
 [assembly: HostingStartup(typeof(SE340.Areas.Identity.IdentityHostingStartup))]
@@ -19,7 +20,7 @@ namespace SE340.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("SE340UserContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<SE340User>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<SE340UserContext>();
             });
         }
