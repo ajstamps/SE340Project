@@ -10,15 +10,23 @@
 
 <p>
     <a asp-action="Create">Create New</a>
+    <a asp-action="ViewFavorites">View your favorites</a>
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+        Find by Make or Model: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Make)
+                @Html.ActionLink("make", "Index", new { sortOrder = "make" })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Model)
+                @Html.ActionLink("model", "Index", new { sortOrder = "model" })
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Drive)
@@ -33,50 +41,59 @@
                 @Html.DisplayNameFor(model => model.Displacement)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Weight)
+                @Html.ActionLink("weight", "Index", new { sortOrder = "weight" })
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Drive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Engine_Layout)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Num_cylinders)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Displacement)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Weight)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
-                @if (userFavorites.Contains(item))
-                {
-                    <a asp-action="Unfavorite" asp-route-id="@item.ID">Unfavorite</a>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Make)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Drive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Engine_Layout)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Num_cylinders)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Displacement)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    <button type="button" class="btn btn-outline-secondary">
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                        @if (userFavorites.Contains(item))
+                        {
+                            <a asp-action="Unfavorite" asp-route-id="@item.ID">Unfavorite</a>
 
-                }
-                else
-                {
-                    <a asp-action="Favorite" asp-route-id="@item.ID">Favorite</a>
-                }
-            </td>
-        </tr>
-}
+                        }
+                        else
+                        {
+                            <a asp-action="Favorite" asp-route-id="@item.ID">Favorite</a>
+                        }
+                    </button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

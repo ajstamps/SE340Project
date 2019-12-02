@@ -24,13 +24,36 @@ namespace SE340.Controllers
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             SE340User user = await _userManager.FindByNameAsync(User.Identity.Name);
-
+            var vehicles = new List<Vehicle>();
             ViewData["UserFavorites"] = user.FavoritedVehicles;
 
-            return View(await _context.Vehicles.ToListAsync());
+            vehicles = _context.Vehicles.ToList();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                vehicles = vehicles.Where(s => s.Make.Contains(searchString) || s.Model.Contains(searchString)).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "make":
+                    vehicles = vehicles.OrderBy(s => s.Make).ToList();
+                    break;
+                case "model":
+                    vehicles = vehicles.OrderBy(s => s.Model).ToList();
+                    break;
+                case "weight":
+                    vehicles = vehicles.OrderBy(s => s.Weight).ToList();
+                    break;
+                default:
+                    vehicles = vehicles.OrderByDescending(s => s.Make).ToList();
+                    break;
+            }
+
+            return View(vehicles);
         }
 
         // GET: Vehicles/Details/5
@@ -190,10 +213,59 @@ namespace SE340.Controllers
                 user.FavoritedVehicles.Add(vehicle);
 
                 await _userManager.UpdateAsync(user);
-
                 ctx.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        [ActionName("Unfavorite")]
+        public async Task<IActionResult> Unfavorite(int id)
+        {
+            var store = new UserStore<SE340User>(_context);
+            var ctx = store.Context;
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(m => m.ID == id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                Console.WriteLine(vehicle.Make);
+            }
+
+            SE340User user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.FavoritedVehicles.Contains(vehicle))
+            {
+                user.FavoritedVehicles.Remove(vehicle);
+
+                await _userManager.UpdateAsync(user);
+
+                ctx.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [ActionName("ViewFavorites")]
+        public async Task<IActionResult> ViewFavorites()
+        {
+            SE340User user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            ViewData["UserFavorites"] = user.FavoritedVehicles;
+
+            return View(await _context.Vehicles.ToListAsync());
         }
     }
 }
